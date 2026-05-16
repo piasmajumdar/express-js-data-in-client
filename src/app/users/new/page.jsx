@@ -12,13 +12,29 @@ import {
     TextArea,
     TextField,
 } from "@heroui/react";
+import { redirect } from "next/navigation";
 
 const NewUserPage = () => {
-    const onSubmit =(e)=>{
+    const onSubmit =async(e)=>{
         e.preventDefault();
         const formData = new FormData(e.target);
         const newUser = Object.fromEntries(formData.entries());
         console.log('new user data', newUser);
+
+        const req = await fetch('http://localhost:8000/users', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(newUser)
+        })
+
+        const res = await req.json();
+        // console.log('created user', res)
+        if(res.success){
+            alert('User created successfully');
+            redirect('/users');
+        }
 
     }
     return (
